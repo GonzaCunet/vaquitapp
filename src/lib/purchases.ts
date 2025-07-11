@@ -1,3 +1,5 @@
+import { firestore } from "./firestore";
+const collection = firestore.collection("purchases");
 type Purchase = {
   id: string;
   from: string;
@@ -44,12 +46,16 @@ export async function createPurchase(
     date: new Date(),
     status: "pending",
   };
+
+  const newPurchaseRef = await collection.add(purchase);
   // guardamos esta nueva purchase en la db y devolvemos el id
-  return "1234";
+  console.log(`New purchase created with ID: ${newPurchaseRef.id}`);
+  return newPurchaseRef.id;
 }
 
-export function confirmPurchase(purchaseId: string) {
+export async function confirmPurchase(purchaseId: string) {
   // confirmamos la compra en la DB
+  await collection.doc(purchaseId).update({ status: "confirmed" });
   console.log(`Purchase ${purchaseId} confirmed`);
   return true;
 }
