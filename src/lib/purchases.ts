@@ -10,32 +10,11 @@ type Purchase = {
 };
 export async function getConfirmedPayments(): Promise<Purchase[]> {
   // Mock data
-  return [
-    {
-      id: "1",
-      from: "Pepito",
-      amount: 33000,
-      message: "Ahi te va mi aporte",
-      date: new Date(),
-      status: "confirmed",
-    },
-    {
-      id: "2",
-      from: "Juanita",
-      amount: 54000,
-      message: "Apoyo esta campaña",
-      date: new Date(),
-      status: "confirmed",
-    },
-    {
-      id: "3",
-      from: "Pepita",
-      amount: 60000,
-      message: "Ojalá que llegues",
-      date: new Date(),
-      status: "confirmed",
-    },
-  ];
+  const snapshot = await collection.where("status", "==", "confirmed").get();
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as Purchase[];
 }
 
 export async function createPurchase(
